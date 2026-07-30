@@ -27,9 +27,12 @@ alter table public.meal_buyers enable row level security;
 drop policy if exists "authenticated people access" on public.people;
 drop policy if exists "authenticated entries access" on public.meal_entries;
 drop policy if exists "authenticated buyers access" on public.meal_buyers;
-create policy "authenticated people access" on public.people for all to authenticated using (true) with check (true);
-create policy "authenticated entries access" on public.meal_entries for all to authenticated using (true) with check (true);
-create policy "authenticated buyers access" on public.meal_buyers for all to authenticated using (true) with check (true);
+drop policy if exists "temporary public people access" on public.people;
+drop policy if exists "temporary public entries access" on public.meal_entries;
+drop policy if exists "temporary public buyers access" on public.meal_buyers;
+create policy "temporary public people access" on public.people for all to anon using (true) with check (true);
+create policy "temporary public entries access" on public.meal_entries for all to anon using (true) with check (true);
+create policy "temporary public buyers access" on public.meal_buyers for all to anon using (true) with check (true);
 
 insert into public.people (name) values
   ('田皓畅'),('翟铭皓'),('黄业源'),('赵新源'),('刘东奇'),('张思捷'),('郭惠'),('宋怡萱'),('李曼琴'),('丁若涵'),('文庭羿'),('陈墨涵'),('曹馨予'),('韦庆池'),('王慧颖'),('宋张鹏'),('于沛伦'),('时星雨'),('陈智琦'),('王紫怡'),('吴优')
