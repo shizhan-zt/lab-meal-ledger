@@ -7,6 +7,7 @@ create table if not exists public.people (
 create table if not exists public.meal_entries (
   meal_id text not null check (meal_id in ('0729d','0730b','0730l','0730d','0731b','0731l','0731d','0801b','0801l','0801d','0802b','0802l','0802d')),
   person_id uuid not null references public.people(id) on delete cascade,
+  buyer text not null default '施展' check (buyer in ('施展', '刘馨遥')),
   food text not null default '' check (char_length(food) <= 80),
   cents integer not null default 0 check (cents >= 0 and cents <= 1000000),
   settled boolean not null default false,
@@ -19,6 +20,15 @@ create table if not exists public.meal_buyers (
   buyer text not null check (buyer in ('施展', '刘馨遥')),
   updated_at timestamptz not null default now()
 );
+
+alter table public.meal_entries add column if not exists buyer text check (buyer in ('施展', '刘馨遥'));
+update public.meal_entries as entry
+set buyer = coalesce(legacy.buyer, '施展')
+from public.meal_buyers as legacy
+where entry.meal_id = legacy.meal_id and entry.buyer is null;
+update public.meal_entries set buyer = '施展' where buyer is null;
+alter table public.meal_entries alter column buyer set default '施展';
+alter table public.meal_entries alter column buyer set not null;
 
 alter table public.people enable row level security;
 alter table public.meal_entries enable row level security;
